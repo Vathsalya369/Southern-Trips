@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Kerala</title>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0">
+        <!--CDN Links-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="table-container">
+            <div class="container">
+                <h1 class="text-center">Kerala</h1>
+                <div>
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>Destination</th>
+                                <th>Duration</th>
+                                <th>Distance from Kerala(in km)</th>
+                                <th>Maps</th>
+                                <th>Images</th>
+                                <th>Price(in rs)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+    
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display:block;justify-content: space-between;gap:30px;">
+                    <div>
+                        <label for="name">Enter Place</label>
+                        <input type="text" id="name">
+                        <button onclick="addRow()", class="btn btn-primary">Add Place</button>
+                        <h4>Total Cost</h4>
+                        <button class="btn btn-primary" onclick="calculate()" id="button">Calculate</button>
+                        <input type="text" id="totalCost">
+                    </div>
+                    <button class="btn btn-primary" id="weather" style="width:auto;height:40px;" onclick="weatherApp()">Check weather here</button>
+                    <div class="weather-container hidden">
+                        <p style="padding-top:15p">Check weather here</p>
+                        <input class="input" type="text" id="locationInput" placeholder="location..">
+                        <button id="getBtn">GET</button><br>
+                        <img id="icon" src="maxresdefault.jpg">
+                        <div class="temp" id="tempInfo">
+                            <span id="deg">25</span>
+                            <span id="units">&#176</span>
+                            <span id="c">C</span>
+                            <div id="weather-des">Cloudy</div>
+                            <div id="location">Hyderabad</div>
+                        </div>
+                   </div><br>
+                   <a href="booknow.html" class="btn btn-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+        <script>
+            let table=document.getElementById("table");
+            let tableBody=document.getElementById("tableBody");
+            let sampleData=[
+                            {name:"Munnar", duration:"4 hr", distance:141, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15712.495576652573!2d77.05952484358009!3d10.088933313743947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0799794d099a6d%3A0x63250e5553c7e0c!2sMunnar%2C%20Kerala%20685612!5e0!3m2!1sen!2sin!4v1740882142253!5m2!1sen!2sin", images:"Images/i1.jpg", price:1200},
+                            {name:"Alappuzha",duration:"4 hr", distance:142, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125922.85746129397!2d76.25904421871819!3d9.50096282276818!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0884f1aa296b61%3A0xb84764552c41f85a!2sAlappuzha%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740883620839!5m2!1sen!2sin", images:"Images/i2.jpg", price:1200 },
+                            {name:"Kochi", duration:"3 hr", distance:86, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d502958.1371689837!2d75.97242725931584!3d9.987054994641872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582caa5844192!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884624826!5m2!1sen!2sin", images:"Images/i3.jpg",price:900},
+                            {name:"Wayanad", duration:"7 hr", distance:220, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500057.6357844946!2d75.7783599345015!3d11.715627907739847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba60cf91a9c5f0d%3A0x71dd4da2e1d3e46f!2sWayanad%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884776518!5m2!1sen!2sin", images:"Images/i4.jpg", price:1300},
+                            {name:"Kovalam", duration:"8 hr", distance:306, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31576.088819996905!2d76.95922368697916!3d8.400567720522357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05a5090a19ec65%3A0xb67f315bc0b762ac!2sKovalam%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884919456!5m2!1sen!2sin", images:"Images/i5.jpg", price:1500},
+                            {name:"Thekkady", duration:"6 hr", distance:194, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31470.683102661493!2d77.13990113798532!3d9.609438654498515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b06f8812df2a199%3A0x468af17958c54ae8!2sThekkady%2C%20Kumily%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740885064136!5m2!1sen!2sin", images:"Images/i6.jpg", price:1250},
+                            {name:"Varkala", duration:"7 hr", distance:243, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63095.254276926826!2d76.67628227774081!3d8.74333936099384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05ef26d90220fb%3A0xa3ec40c67d4dd020!2sVarkala%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740885210787!5m2!1sen!2sin", images:"Images/i7.jpg", price:1300}
+                           ];
+            let addData={"Thrissur":{duration:"45 min", distance:31, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d251063.04692621977!2d76.05843000377243!3d10.51168269046709!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7ee15ed42d1bb%3A0x82e45aa016ca7db!2sThrissur%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740886765925!5m2!1sen!2sin",images:"Images/i9.jpeg", price:300},
+                         "Bekal":{duration:"8 hr 45 min", distance:319, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31172.26255282204!2d75.00357589100271!3d12.414178285268745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba480f7348902fd%3A0x7bcde484bd599d6a!2sBekal%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740886997293!5m2!1sen!2sin", images:"Images/i10.jpg", price:1520},
+                         "Kumarakom":{duration:"4 hr", distance:127, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125882.33449933739!2d76.35656192033483!3d9.610508311225274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0881caaef0a8f7%3A0xc23075c3529e921!2sKumarakom%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740885328962!5m2!1sen!2sin", images:"Images/i8.jpg", price:1000},
+                         "Munnar":{duration:"4 hr", distance:141, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15712.495576652573!2d77.05952484358009!3d10.088933313743947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0799794d099a6d%3A0x63250e5553c7e0c!2sMunnar%2C%20Kerala%20685612!5e0!3m2!1sen!2sin!4v1740882142253!5m2!1sen!2sin", images:"Images/i1.jpg", price:1200},
+                         "Alappuzha":{duration:"4 hr", distance:142, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125922.85746129397!2d76.25904421871819!3d9.50096282276818!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0884f1aa296b61%3A0xb84764552c41f85a!2sAlappuzha%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740883620839!5m2!1sen!2sin", images:"Images/i2.jpg", price:1200},
+                         "Kochi": {duration:"3 hr", distance:86, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d502958.1371689837!2d75.97242725931584!3d9.987054994641872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d514abec6bf%3A0xbd582caa5844192!2sKochi%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884624826!5m2!1sen!2sin", images:"Images/i3.jpg",price:900},
+                          "Wayanad":{ duration:"7 hr", distance:220, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500057.6357844946!2d75.7783599345015!3d11.715627907739847!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba60cf91a9c5f0d%3A0x71dd4da2e1d3e46f!2sWayanad%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884776518!5m2!1sen!2sin", images:"Images/i4.jpg", price:1300},
+                         "Kovalam":{duration:"8 hr", distance:306, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31576.088819996905!2d76.95922368697916!3d8.400567720522357!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05a5090a19ec65%3A0xb67f315bc0b762ac!2sKovalam%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740884919456!5m2!1sen!2sin", images:"Images/i5.jpg", price:1500},
+                          "Thekkady":{ duration:"6 hr", distance:194, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31470.683102661493!2d77.13990113798532!3d9.609438654498515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b06f8812df2a199%3A0x468af17958c54ae8!2sThekkady%2C%20Kumily%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740885064136!5m2!1sen!2sin", images:"Images/i6.jpg", price:1250},
+                        "Varkala":{ duration:"7 hr", distance:243, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63095.254276926826!2d76.67628227774081!3d8.74333936099384!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b05ef26d90220fb%3A0xa3ec40c67d4dd020!2sVarkala%2C%20Kerala!5e0!3m2!1sen!2sin!4v1740885210787!5m2!1sen!2sin", images:"Images/i7.jpg", price:1300},
+
+            };
+            function populateTable(){
+                tableBody.innerHTML=" ";
+                sampleData.forEach((item,index)=>{
+                    let row=document.createElement("tr");
+                    row.innerHTML=`<td>${item.name}</td>
+                            <td>${item.duration}</td>
+                            <td>${item.distance}</td>
+                            <td><iframe src="${item.maps}"></iframe></td>
+                            <td><img src="${item.images}" alt="i1"></td>
+                            <td>${item.price}</td>
+                            <td><button class="btn btn-primary" onclick="deleteRow(${index})">Delete</button></td>`;
+                                
+                    tableBody.appendChild(row);   
+                    document.getElementById("name").innerHTML="";
+                });
+            }
+
+            function deleteRow(index){
+                sampleData.splice(index,1);
+                populateTable();
+            }
+            populateTable();
+
+            function addRow(){
+                let name=document.getElementById("name").value.trim().toLowerCase();
+                let placeKey = Object.keys(addData).find(key => key.toLowerCase() === name);
+                let row=document.createElement("tr");
+                if (!placeKey) {
+                    alert("Missing Destination!!");
+                    return;
+                }
+                let isAlreadyAdded = sampleData.some(item => item.name.toLowerCase() === placeKey.toLowerCase());
+                if (isAlreadyAdded) {
+                    alert("Already Added!!");
+                    return;
+                }
+                let placeData = addData[placeKey];
+                //console.log("placeData1"+placeData);
+                sampleData.push({
+                    name:placeKey,
+                    duration:placeData.duration,
+                    distance:placeData.distance,
+                    maps:placeData.maps,
+                    images:placeData.images,
+                    price:placeData.price
+                });
+                //console.log("Updated sampleData"+sampleData);
+                document.getElementById("name").value="";
+                populateTable();
+            }
+            function calculate(){
+                let tableBody=document.getElementById("tableBody");
+                let row=tableBody.getElementsByTagName("tr");
+                let totalCost=0;
+                for(let r of row){
+                    let priceCell=r.cells[5];
+                    let price=parseInt(priceCell.innerText);
+                    totalCost+=price;
+                }
+                //document.getElementById("totalCost").value="Total Price is:"+totalCost;
+                document.getElementById("totalCost").value=`Total Price is: ${totalCost}`;
+            }
+
+            
+            document.getElementById('getBtn').addEventListener("click",function(){
+                 const city=document.getElementById('locationInput').value;
+                getwhether(city);
+            });
+            function getwhether(city){
+                const apiKey='cdf319f282849ce29d0039d83ebc2528';
+                const apiUrl=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+                fetch(apiUrl)
+                    .then(Response=>Response.json())
+                    .then(data=>{
+                    displayWeather(data)
+                 })
+                .catch(error=>{
+                    console.log("Error fetching Weather data",error);
+                    document.getElementById('tempInfo').innerHTML='Error fetching weather data.please try again ';
+
+                });
+            }
+            function displayWeather(data){
+                const weatherInfoDiv= document.getElementById('tempInfo');
+                weatherInfoDiv.innerHTML=`
+                    <h2>${data.name},${data.sys.country}</h2>
+                    <p>${data.weather[0].main}-${data.weather[0].description}</p>
+                    <p>Temperature.${data.main.temp}°C</p>
+                    <p>Humidity:${data.main.humidity}</p>
+                    `;
+                }
+            function weatherApp(){  
+                document.getElementById("weather").classList.add("hidden");
+                document.querySelector(".weather-container").classList.remove("hidden");
+            }
+
+        </script>
+    </body>
+</html>

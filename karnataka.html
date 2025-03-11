@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Karnataka</title>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0">
+        <!--CDN Links-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="table-container">
+            <div class="container">
+                <h1 class="text-center">Karnataka</h1>
+                <div>
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>Destination</th>
+                                <th>Duration</th>
+                                <th>Distance from Banglore(in km)</th>
+                                <th>Maps</th>
+                                <th>Images</th>
+                                <th>Price(in rs)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+    
+                        </tbody>
+                    </table>
+                </div>
+                <div style="display:block;justify-content: space-between;gap:30px;">
+                    <div>
+                        <label for="name">Enter Place</label>
+                        <input type="text" id="name">
+                        <button onclick="addRow()", class="btn btn-primary">Add Place</button>
+                        <h4>Total Cost</h4>
+                        <button class="btn btn-primary" onclick="calculate()" id="button">Calculate</button>
+                        <input type="text" id="totalCost">
+                    </div>
+                    <button class="btn btn-primary" id="weather" style="width:auto;height:40px;" onclick="weatherApp()">Check weather here</button>
+                    <div class="weather-container hidden">
+                        <p style="padding-top:15p">Check weather here</p>
+                        <input class="input" type="text" id="locationInput" placeholder="location..">
+                        <button id="getBtn">GET</button><br>
+                        <img id="icon" src="maxresdefault.jpg">
+                        <div class="temp" id="tempInfo">
+                            <span id="deg">25</span>
+                            <span id="units">&#176</span>
+                            <span id="c">C</span>
+                            <div id="weather-des">Cloudy</div>
+                            <div id="location">Hyderabad</div>
+                        </div>
+                   </div><br>
+                   <a href="booknow.html" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+        <script>
+            let table=document.getElementById("table");
+            let tableBody=document.getElementById("tableBody");
+            let sampleData=[
+                            {name:"Coorg", duration:"4 hr 58 min", distance:254, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62340.37125239208!2d75.69366959297753!3d12.431508757423448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba50075627a7fff%3A0xaf8a66ea4651c1a6!2sMadikeri%2C%20Karnataka%20571201!5e0!3m2!1sen!2sin!4v1740972741054!5m2!1sen!2sin", images:"Images/i14.jpg", price:1350},
+                            {name:"Mysore",duration:"2 hr 30 min", distance:143, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d124738.36909880849!2d76.5532860176839!3d12.310801133067788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baf70381d572ef9%3A0x2b89ece8c0f8396d!2sMysuru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740972938348!5m2!1sen!2sin", images:"Images/i15.jpeg", price:1000},
+                            {name:"Chikmagalur", duration:"4 hr 34min", distance:241, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62121.527027986376!2d75.73124829760027!3d13.313193407846484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbad762c8a889dd%3A0xb3cf49155294be16!2sChikkamagaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740975881288!5m2!1sen!2sin", images:"Images/i16.jpeg",price:1000},
+                            {name:"Hampi", duration:"5 hr 35 min", distance:343, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7695.596326333341!2d76.4581848343575!3d15.333200137963402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb77fd95d4be823%3A0x6e52e05076df36b8!2sHampi%2C%20Karnataka%20583239!5e0!3m2!1sen!2sin!4v1740976186406!5m2!1sen!2sin", images:"Images/i17.jpg", price:1450},
+                            {name:"Udupi", duration:"8 hr 5 min", distance:396, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62116.72716467775!2d74.70580924770238!3d13.331888797072326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbcbb69938f41cf%3A0xcccc99e431850143!2sUdupi%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740976333383!5m2!1sen!2sin", images:"Images/i18.jpeg", price:1500},
+                            {name:"Gokarna", duration:"8 hr 54 min", distance:486, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61793.30504495237!2d74.28294020464179!3d14.537326936707215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbe83d65b0a4c71%3A0xe9e09fd076bb41c0!2sGokarna%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740976592233!5m2!1sen!2sin", images:"Images/i19.jpeg", price:1250},
+                            {name:"Dandeli", duration:"7 hr 55 min", distance:478, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30796.63630828819!2d74.59668214499573!3d15.236159268715918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf2013bd84cb99%3A0x44a7efeb332459ef!2sOld%20Dandeli%2C%20Dandeli%2C%20Karnataka%20581325!5e0!3m2!1sen!2sin!4v1740976770162!5m2!1sen!2sin", images:"Images/i20.jpg", price:1300}
+                           ];
+            let addData={"Badami":{duration:"8 hr 18 min", distance:449, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30694.15385696833!2d75.65848549610867!3d15.921156193035165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb887066f877b11%3A0x32471143677d16e4!2sBadami%2C%20Karnataka%20587201!5e0!3m2!1sen!2sin!4v1740976899533!5m2!1sen!2sin",images:"Images/i21.jpeg", price:1300},
+                         " Jog Falls":{duration:"7 hr 37 min", distance:427, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d123767.96390951452!2d74.7014962095651!3d14.209477321427196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbc0d130bec39cf%3A0xac178ba925b4429c!2sJog%20Falls%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740977082485!5m2!1sen!2sin", images:"Images/i22.jpeg", price:1520},
+                         "Murudeshwar":{duration:"9 hr 11 min", distance:501, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30957.98072366754!2d74.47209079326176!3d14.092072000118256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbc46d192e0edad%3A0x87c516bd6653efe1!2sMurdeshwar%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740977273623!5m2!1sen!2sin", images:"Images/i23.jpeg", price:1000},
+                         "Coorg":{duration:"4 hr 58 min", distance:254, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62340.37125239208!2d75.69366959297753!3d12.431508757423448!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba50075627a7fff%3A0xaf8a66ea4651c1a6!2sMadikeri%2C%20Karnataka%20571201!5e0!3m2!1sen!2sin!4v1740972741054!5m2!1sen!2sin", images:"Images/i14.jpg", price:1350},
+                         "Mysore":{duration:"2 hr 30 min", distance:143, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d124738.36909880849!2d76.5532860176839!3d12.310801133067788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3baf70381d572ef9%3A0x2b89ece8c0f8396d!2sMysuru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740972938348!5m2!1sen!2sin", images:"Images/i15.jpeg", price:1000},
+                          "Chikmagalur":{duration:"4 hr 34min", distance:241, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62121.527027986376!2d75.73124829760027!3d13.313193407846484!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbad762c8a889dd%3A0xb3cf49155294be16!2sChikkamagaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740975881288!5m2!1sen!2sin", images:"Images/i16.jpeg",price:1000},
+                          "Hampi":{duration:"5 hr 35 min", distance:343, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7695.596326333341!2d76.4581848343575!3d15.333200137963402!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb77fd95d4be823%3A0x6e52e05076df36b8!2sHampi%2C%20Karnataka%20583239!5e0!3m2!1sen!2sin!4v1740976186406!5m2!1sen!2sin", images:"Images/i17.jpg", price:1450},
+                          "Udupi":{duration:"8 hr 5 min", distance:396, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62116.72716467775!2d74.70580924770238!3d13.331888797072326!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbcbb69938f41cf%3A0xcccc99e431850143!2sUdupi%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740976333383!5m2!1sen!2sin", images:"Images/i18.jpeg", price:1500},
+                           "Gokarna":{duration:"8 hr 54 min", distance:486, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61793.30504495237!2d74.28294020464179!3d14.537326936707215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbe83d65b0a4c71%3A0xe9e09fd076bb41c0!2sGokarna%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1740976592233!5m2!1sen!2sin", images:"Images/i19.jpeg", price:1250},
+                           "Dandeli":{duration:"7 hr 55 min", distance:478, maps:"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30796.63630828819!2d74.59668214499573!3d15.236159268715918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbf2013bd84cb99%3A0x44a7efeb332459ef!2sOld%20Dandeli%2C%20Dandeli%2C%20Karnataka%20581325!5e0!3m2!1sen!2sin!4v1740976770162!5m2!1sen!2sin", images:"Images/i20.jpg", price:1300}
+
+            };
+            function populateTable(){
+                tableBody.innerHTML=" ";
+                sampleData.forEach((item,index)=>{
+                    let row=document.createElement("tr");
+                    row.innerHTML=`<td>${item.name}</td>
+                            <td>${item.duration}</td>
+                            <td>${item.distance}</td>
+                            <td><iframe src="${item.maps}"></iframe></td>
+                            <td><img src="${item.images}" alt="i1"></td>
+                            <td>${item.price}</td>
+                            <td><button class="btn btn-primary" onclick="deleteRow(${index})">Delete</button></td>`;
+                                
+                    tableBody.appendChild(row);   
+                    
+                });
+            }
+
+            function deleteRow(index){
+                sampleData.splice(index,1);
+                populateTable();
+            }
+            populateTable();
+
+            function addRow(){
+                let name=document.getElementById("name").value.trim().toLowerCase();
+                let placeKey = Object.keys(addData).find(key => key.toLowerCase() === name);
+                let row=document.createElement("tr");
+                if (!placeKey) {
+                    alert("Missing Destination!!");
+                    return;
+                }
+                let isAlreadyAdded = sampleData.some(item => item.name.toLowerCase() === placeKey.toLowerCase());
+                if (isAlreadyAdded) {
+                    alert("Already Added!!");
+                    return;
+                }
+                let placeData = addData[placeKey];
+                //console.log("placeData1"+placeData);
+                sampleData.push({
+                    name:placeKey,
+                    duration:placeData.duration,
+                    distance:placeData.distance,
+                    maps:placeData.maps,
+                    images:placeData.images,
+                    price:placeData.price
+                });
+                //console.log("Updated sampleData"+sampleData);
+                populateTable();
+            }
+            function calculate(){
+                let tableBody=document.getElementById("tableBody");
+                let row=tableBody.getElementsByTagName("tr");
+                let totalCost=0;
+                for(let r of row){
+                    let priceCell=r.cells[5];
+                    let price=parseInt(priceCell.innerText);
+                    totalCost+=price;
+                }
+                document.getElementById("totalCost").value="Total Price is:"+totalCost;
+            }
+
+            document.getElementById('getBtn').addEventListener("click",function(){
+                 const city=document.getElementById('locationInput').value;
+                getwhether(city);
+            });
+            function getwhether(city){
+                const apiKey='cdf319f282849ce29d0039d83ebc2528';
+                const apiUrl=`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+                fetch(apiUrl)
+                    .then(Response=>Response.json())
+                    .then(data=>{
+                    displayWeather(data)
+                 })
+                .catch(error=>{
+                    console.log("Error fetching Weather data",error);
+                    document.getElementById('tempInfo').innerHTML='Error fetching weather data.please try again ';
+
+                });
+            }
+            function displayWeather(data){
+                const weatherInfoDiv= document.getElementById('tempInfo');
+                weatherInfoDiv.innerHTML=`
+                    <h2>${data.name},${data.sys.country}</h2>
+                    <p>${data.weather[0].main}-${data.weather[0].description}</p>
+                    <p>Temperature.${data.main.temp}°C</p>
+                    <p>Humidity:${data.main.humidity}</p>
+                    `;
+                }
+            function weatherApp(){  
+                document.getElementById("weather").classList.add("hidden");
+                document.querySelector(".weather-container").classList.remove("hidden");
+            }
+
+        </script>
+    </body>

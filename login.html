@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Login Form</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--CDN links-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <style>
+        body{
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f8ff;
+        font-family: 'Arial', sans-serif;
+    }
+    form{
+        width: 350px;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        padding: 30px;
+        height:60vh;
+        background-size: cover;
+    }
+    .heading{
+        color: #007bff;
+        margin-bottom: 20px;
+        display:block;
+        text-align: center;
+    }
+    
+    input, button{
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .checkbox-container input {
+        width: auto;
+        margin-right: 5px;
+        margin-bottom: 0;
+    }
+    button{
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    button:hover{
+        background-color: #218838;
+    }
+    span{
+        color: red;
+        font-size: 14px;
+    }
+    .hidden {
+        display: none;
+    }
+    p {
+        text-align: center;
+        margin-top: 10px;
+    }
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+    }
+    </style>
+    <body>
+        <form onsubmit="return funTask()" class="form" id="loginForm">
+            <h3 class="heading">Login</h3>
+            <input type="email" id="email" placeholder="email" required autocomplete="email"><br>
+            <span id="emailError"></span>
+            <input type="password" id="password" placeholder="Enter password" required autocomplete="new-password"><br>
+            <div class="checkbox-container">
+                <input type="checkbox" id="showPassword" onclick="passwordToggle()">
+                <label for="showPassword">Show Password</label>
+            </div>
+            <button type="submit">Login</button>
+            <p><a href="#" onclick="showForgotPassword();return false;">Forget Password?</a> </p>
+        </form>
+
+
+        <form id="forgotPassword" class="form hidden">
+            <h3 class="heading">Reset Password</h3>
+            <p>Enter email to reset password</p>
+            <input type="email" id="resetEmail" placeholder="email" required><br>
+            <span id="resetEmailError"></span>
+            <button type="button" onclick="verifyEmail()">Verify Email</button>
+            <a href="#" class="back-link" id="showLoginForm" onclick="showLoginForm();return false;"></a>
+        </form>
+
+
+        <form id="newPasswordForm" class="form hidden">
+            <h3 class="heading">New Password</h3>
+            <input type="password" id="newPassword" placeholder="New Password" required><br>
+            <span id="newPasswordError"></span>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required><br>
+            <span id="confirmPasswordError"></span>
+            <div class="checkbox-container">
+                <input type="checkbox" id="showNewPassword" onclick="newPasswordToggle()">
+                <label for="showNewPassword">Show Password</label>
+            </div>
+            <button type="button" onclick="updatePassword()">Update Password</button>
+        </form>
+
+
+
+        <script>
+            // Global variable to store reset email address
+            let rstEmailAddress = "";
+            //localStorage.clear();
+            function funTask(){
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let user1 = users.find(u => u.email === email && u.password === password);
+                
+                if(!user1){
+                    document.getElementById("emailError").innerHTML = "Invalid email or password";
+                    return false;
+                }
+                
+                // Store the actual user object, not the string "user1"
+                localStorage.setItem("currentUser", JSON.stringify(users));
+                alert("Login successful");
+                window.location.href = "index.html";
+                return false;
+            }
+            
+            function passwordToggle(){
+                var x = document.getElementById("password");
+                if(x.type === "password"){
+                    x.type = "text";
+                }
+                else{
+                    x.type = "password";
+                }
+            }
+            
+            // Add missing function for new password toggle
+            function newPasswordToggle(){
+                var x = document.getElementById("newPassword");
+                var y = document.getElementById("confirmPassword");
+                if(x.type === "password"){
+                    x.type = "text";
+                    y.type = "text";
+                }
+                else{
+                    x.type = "password";
+                    y.type = "password";
+                }
+            }
+
+            function showForgotPassword(){
+                document.getElementById("loginForm").classList.add("hidden");
+                document.getElementById("forgotPassword").classList.remove("hidden");
+                document.getElementById("newPasswordForm").classList.add("hidden");
+            }
+
+            function showLoginForm(){
+                document.getElementById("loginForm").classList.remove("hidden");
+                document.getElementById("forgotPassword").classList.add("hidden");
+                document.getElementById("newPasswordForm").classList.add("hidden");
+            }
+
+            function showNewPassword(){
+                document.getElementById("loginForm").classList.add("hidden");
+                document.getElementById("forgotPassword").classList.add("hidden");
+                document.getElementById("newPasswordForm").classList.remove("hidden");
+            } 
+
+            function verifyEmail(){
+                let rstEmail = document.getElementById("resetEmail").value;
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let user1 = users.find(u => u.email === rstEmail);
+                
+                if(!user1){
+                    document.getElementById("resetEmailError").innerHTML = "Email not registered";
+                    document.getElementById("showLoginForm").innerHTML="Back to Signup";
+                    //window.location.href="signup.html";
+                    return false;
+                }
+                
+                rstEmailAddress = rstEmail;
+                document.getElementById("resetEmailError").innerHTML = "";
+                document.getElementById("showLoginForm").innerHTML="Back to Login";
+                alert("Email verified! Create new password");
+                showNewPassword();
+            }
+
+            function updatePassword(){
+                let newPassword = document.getElementById("newPassword").value;
+                let confirmPassword = document.getElementById("confirmPassword").value;
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+                let userIndex = users.findIndex(u => u.email === rstEmailAddress);
+                
+                if(userIndex === -1){
+                    alert("Error: User not found");
+                    showLoginForm();
+                    return false;
+                }
+                
+                let originalPassword = users[userIndex].password;
+                
+                if(newPassword.length < 6){
+                    document.getElementById("newPasswordError").innerHTML = "Password must be at least 6 characters";
+                    return false;
+                }
+                else{
+                    document.getElementById("newPasswordError").innerHTML = "";
+                }
+                
+                if(newPassword !== confirmPassword){
+                    document.getElementById("confirmPasswordError").innerHTML = "Passwords do not match";
+                    return false;
+                }
+                else{
+                    document.getElementById("confirmPasswordError").innerHTML = "";
+                }
+                
+                if(newPassword === originalPassword){
+                    document.getElementById("newPasswordError").innerHTML = "New password should not be same as old password";
+                    alert("New password should not be same as old password");
+                    return false;
+                }
+                else{
+                    document.getElementById("newPasswordError").innerHTML = "";
+                }
+                
+                users[userIndex].password = newPassword;
+                localStorage.setItem("users", JSON.stringify(users));
+                alert("Password updated successfully");
+                showLoginForm();
+            }
+        </script>
+    </body>
+</html>
